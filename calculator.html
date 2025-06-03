@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calculator</title>
+  <style>
+    :root {
+      --bg-color: #ffcce0;
+      --calc-bg: #fff0f5;
+      --display-bg: #dba2bb;
+      --btn-color: #f9c5d1;
+      --btn-hover: #f2a8bd;
+      --text-color: #333;
+    }
+
+    body.dark {
+      --bg-color: #1e1e1e;
+      --calc-bg: #2b2b2b;
+      --display-bg: #444;
+      --btn-color: #333;
+      --btn-hover: #555;
+      --text-color: #fff;
+    }
+
+    body.white {
+      --bg-color: #ffffff;
+      --calc-bg: #f4f4f4;
+      --display-bg: #e0e0e0;
+      --btn-color: #d0d0d0;
+      --btn-hover: #bbb;
+      --text-color: #000;
+    }
+
+    body {
+      background: var(--bg-color);
+      font-family: 'Segoe UI', sans-serif;
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      text-align: center;
+      padding: 20px 0 10px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      color: #d6336c;
+    }
+
+    header hr {
+      width: 60%;
+      margin: 10px auto;
+      border: 2px solid #d6336c;
+    }
+
+    .controls {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .controls button {
+      margin: 0 5px;
+      padding: 8px 15px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      background-color: var(--btn-color);
+      color: var(--text-color);
+      transition: background-color 0.2s;
+    }
+    .controls button:hover {
+      background-color: var(--btn-hover);
+    }
+
+    .main-container {
+      display: flex;
+      justify-content: center;
+      align-items: start;
+      padding-top: 20px;
+    }
+
+    .calculator {
+      background: var(--calc-bg);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      max-width: 360px;
+      width: 100%;
+    }
+
+    #display {
+      width: 100%;
+      font-size: 1.8rem;
+      padding: 10px;
+      text-align: right;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 10px;
+      background: var(--display-bg);
+      color: var(--text-color);
+      box-sizing: border-box;
+      user-select: text;
+      position: relative;
+      font-family: monospace;
+    }
+
+    /* hidden preview text using ::after */
+    #display::after {
+      content: attr(data-preview);
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(0,0,0,0.3);
+      font-size: 1.2rem;
+      pointer-events: none;
+      user-select: none;
+      font-style: italic;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    button {
+      padding: 15px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      background: var(--btn-color);
+      color: var(--text-color);
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background: var(--btn-hover);
+    }
+
+    .equal { background: #ff6b81; color: #fff; }
+    .equal:hover { background: #e5506b; }
+    .clear { background: #d63031; color: #fff; }
+    .clear:hover { background: #b71c1c; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Scientific Calculator</h1>
+    <hr />
+  </header>
+
+  <div class="controls">
+    <button onclick="toggleDark()"> Dark Mode</button>
+    <button onclick="setTheme('white')">Light Mode</button>
+    <button onclick="setTheme('default')">Pink (default)</button>
+
+  </div>
+
+  <div class="main-container">
+    <div class="calculator">
+      <input type="text" id="display" disabled data-preview="" />
+      <div class="buttons">
+        <button onclick="clearDisplay()" class="clear">C</button>
+        <button onclick="append('(')">(</button>
+        <button onclick="append(')')">)</button>
+        <button onclick="append('^')">^</button>
+        <button onclick="del()">DEL</button>
+
+        <button onclick="append('7')">7</button>
+        <button onclick="append('8')">8</button>
+        <button onclick="append('9')">9</button>
+        <button onclick="append('/')">/</button>
+        <button onclick="append('Math.sqrt(')">√</button>
+
+        <button onclick="append('4')">4</button>
+        <button onclick="append('5')">5</button>
+        <button onclick="append('6')">6</button>
+        <button onclick="append('*')">*</button>
+        <button onclick="append('Math.log10(')">log</button>
+
+        <button onclick="append('1')">1</button>
+        <button onclick="append('2')">2</button>
+        <button onclick="append('3')">3</button>
+        <button onclick="append('-')">-</button>
+        <button onclick="append('Math.sin(')">sin</button>
+
+        <button onclick="append('0')">0</button>
+        <button onclick="append('.')">.</button>
+        <button onclick="calculate()" class="equal">=</button>
+        <button onclick="append('+')">+</button>
+        <button onclick="append('Math.cos(')">cos</button>
+
+        <button onclick="append('Math.tan(')">tan</button>
+        <button onclick="append('Math.PI')">π</button>
+        <button onclick="append('Math.E')">e</button>
+        <button onclick="append('**2')">x²</button>
+        <button onclick="append('**3')">x³</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const display = document.getElementById("display");
+
+    function append(value) {
+      display.value += value;
+      updatePreview();
+    }
+
+    function clearDisplay() {
+      display.value = "";
+      updatePreview();
+    }
+
+    function del() {
+      display.value = display.value.slice(0, -1);
+      updatePreview();
+    }
+
+    function calculate() {
+      try {
+        const expr = display.value.replace(/\^/g, '**');
+        const result = eval(expr);
+        display.value = result;
+        display.setAttribute("data-preview", ""); // clear preview on calculate
+      } catch {
+        display.value = "Error";
+        display.setAttribute("data-preview", "");
+      }
+    }
+
+    function updatePreview() {
+      try {
+        if(display.value.trim() === "") {
+          display.setAttribute("data-preview", "");
+          return;
+        }
+        const expr = display.value.replace(/\^/g, '**');
+        let previewResult = eval(expr);
+        if(typeof previewResult === "number" && !isNaN(previewResult)) {
+          display.setAttribute("data-preview", previewResult);
+        } else {
+          display.setAttribute("data-preview", "");
+        }
+      } catch {
+        display.setAttribute("data-preview", "");
+      }
+    }
+
+    function toggleDark() {
+      document.body.classList.toggle("dark");
+    }
+
+    function setTheme(theme) {
+      document.body.classList.remove("dark", "white");
+      if (theme === 'dark') document.body.classList.add("dark");
+      else if (theme === 'white') document.body.classList.add("white");
+    }
+
+    // Keyboard support for input and controls
+    document.addEventListener("keydown", (e) => {
+      const allowedKeys = "0123456789.+-*/()^";
+      if (allowedKeys.includes(e.key)) {
+        append(e.key);
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        calculate();
+      } else if (e.key === "Backspace") {
+        e.preventDefault();
+        del();
+      } else if (e.key.toLowerCase() === "c" || e.key === "Escape") {
+        clearDisplay();
+      }
+    });
+    
+  </script>
+</body>
+</html>
+
+
+
